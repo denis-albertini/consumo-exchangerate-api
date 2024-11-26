@@ -1,9 +1,11 @@
+import { mapaErros } from "./mapaValidacao.js";
+
 export default function conversorOutput(resultado) {
   console.log();
 
   if (resultado.isFailure) {
     resultado.errors.forEach((erro) => {
-      console.log(erro);
+      console.log(mapaErros.get(erro) || erro);
     });
 
     console.log();
@@ -14,7 +16,7 @@ export default function conversorOutput(resultado) {
   const dados = resultado.value;
 
   if (dados.result === "error") {
-    console.log(dados["error-type"]);
+    console.log(`Erro: ${dados["error-type"]}`);
 
     console.log();
 

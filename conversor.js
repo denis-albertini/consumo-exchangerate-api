@@ -17,21 +17,24 @@ export default class Conversor {
   }
 
   set moedaOrigem(moeda) {
-    if (this.validarMoedaOrigem(moeda).isFailure) return;
+    const validaMoedaOrigem = this.validarMoedaOrigem(moeda);
+    if (validaMoedaOrigem.isFailure) return;
 
-    this.#moedaOrigem = moeda.toUpperCase();
+    this.#moedaOrigem = validaMoedaOrigem.value;
   }
 
   set moedaDestino(moeda) {
-    if (this.validarMoedaDestino(moeda).isFailure) return;
+    const validaMoedaDestino = this.validarMoedaDestino(moeda);
+    if (validaMoedaDestino.isFailure) return;
 
-    this.#moedaDestino = moeda.toUpperCase();
+    this.#moedaDestino = validaMoedaDestino.value;
   }
 
   set valor(valor) {
-    if (this.validarValor(valor).isFailure) return;
+    const validaValor = this.validarValor(valor);
+    if (validaValor.isFailure) return;
 
-    this.#valor = Number(valor.replace(",", "."));
+    this.#valor = validaValor.value;
   }
 
   constructor() {
@@ -43,13 +46,9 @@ export default class Conversor {
   validarMoedaOrigem(moeda) {
     moeda = moeda.toUpperCase();
 
-    if (moeda.length !== 3)
-      return Result.failure(
-        "Moeda de origem deve ter exatamente 3 caracteres!"
-      );
+    if (moeda.length !== 3) return Result.failure(1);
 
-    if (moeda === this.#moedaDestino)
-      return Result.failure("Moedas de origem e destino devem ser diferentes!");
+    if (moeda === this.#moedaDestino) return Result.failure(2);
 
     return Result.success(moeda);
   }
@@ -57,13 +56,9 @@ export default class Conversor {
   validarMoedaDestino(moeda) {
     moeda = moeda.toUpperCase();
 
-    if (moeda.length !== 3)
-      return Result.failure(
-        "Moeda de destino deve ter exatamente 3 caracteres!"
-      );
+    if (moeda.length !== 3) return Result.failure(3);
 
-    if (moeda === this.#moedaOrigem)
-      return Result.failure("Moedas de origem e destino devem ser diferentes!");
+    if (moeda === this.#moedaOrigem) return Result.failure(2);
 
     return Result.success(moeda);
   }
@@ -71,7 +66,7 @@ export default class Conversor {
   validarValor(valor) {
     valor = Number(valor.replace(",", "."));
 
-    if (valor <= 0) return Result.failure("Valor deve ser maior que 0!");
+    if (valor <= 0) return Result.failure(4);
 
     return Result.success(valor);
   }

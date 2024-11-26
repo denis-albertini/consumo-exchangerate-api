@@ -2,26 +2,21 @@ import Result from "./result.js";
 import consumirExchangeRate from "./conversorService.js";
 
 export default async function conversorController(conversor, formulario) {
-  let validacao = Result.success(null); // Inicializa um Result qualquer
-
   const moedaOrigem = formulario.moedaOrigem;
   const moedaDestino = formulario.moedaDestino;
   const valor = formulario.valor;
 
-  const validacaoMoedaOrigem = conversor.validarMoedaOrigem(moedaOrigem);
-  const validacaoMoedaDestino = conversor.validarMoedaDestino(moedaDestino);
-  const validacaoValor = conversor.validarValor(valor);
+  const erros = [];
 
-  if (validacaoMoedaOrigem.isFailure)
-    validacao = validacao.mergeErrors(validacaoMoedaOrigem);
+  const validaMoedaOrigem = conversor.validarMoedaOrigem(moedaOrigem);
+  const validaMoedaDestino = conversor.validarMoedaDestino(moedaDestino);
+  const validaValor = conversor.validarValor(valor);
 
-  if (validacaoMoedaDestino.isFailure)
-    validacao = validacao.mergeErrors(validacaoMoedaDestino);
+  if (validaMoedaOrigem.isFailure) erros.push(...validaMoedaOrigem.errors);
+  if (validaMoedaDestino.isFailure) erros.push(...validaMoedaDestino.errors);
+  if (validaValor.isFailure) erros.push(...validaValor.errors);
 
-  if (validacaoValor.isFailure)
-    validacao = validacao.mergeErrors(validacaoValor);
-
-  if (validacao.errors.length > 0) return validacao;
+  if (erros.length > 0) return Result.failure(erros);
 
   conversor.moedaOrigem = moedaOrigem;
   conversor.moedaDestino = moedaDestino;
