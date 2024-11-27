@@ -5,7 +5,7 @@ export default function conversorOutput(resultado) {
 
   if (resultado.isFailure) {
     resultado.errors.forEach((erro) => {
-      console.log(mapaErros.get(erro) || erro);
+      console.log(mapaErros.get(erro));
     });
 
     console.log();

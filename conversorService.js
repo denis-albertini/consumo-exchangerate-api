@@ -16,6 +16,6 @@ export default async function consumirExchangeRate(
 
     return Result.success(conversao);
   } catch (error) {
-    return Result.failure(error.message);
+    return Result.failure(5);
   }
 }
