@@ -1,10 +1,14 @@
-import Result from "./result.js";
 import consumirExchangeRate from "./conversorService.js";
+import conversorOutput from "./conversorOutput.js";
+import Conversor from "./conversor.js";
+import Result from "./result.js";
 
-export default async function conversorController(conversor, formulario) {
+export default async function conversorController(formulario) {
   const moedaOrigem = formulario.moedaOrigem;
   const moedaDestino = formulario.moedaDestino;
   const valor = formulario.valor;
+
+  const conversor = new Conversor();
 
   const erros = [];
 
@@ -16,7 +20,10 @@ export default async function conversorController(conversor, formulario) {
   if (validaMoedaDestino.isFailure) erros.push(...validaMoedaDestino.errors);
   if (validaValor.isFailure) erros.push(...validaValor.errors);
 
-  if (erros.length > 0) return Result.failure(erros);
+  if (erros.length > 0) {
+    conversorOutput(Result.failure(erros));
+    return;
+  }
 
   conversor.moedaOrigem = moedaOrigem;
   conversor.moedaDestino = moedaDestino;
@@ -28,5 +35,5 @@ export default async function conversorController(conversor, formulario) {
     conversor.valor
   );
 
-  return requisicao;
+  conversorOutput(requisicao);
 }
